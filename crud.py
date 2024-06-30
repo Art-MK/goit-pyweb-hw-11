@@ -1,6 +1,7 @@
 import logging
 from sqlalchemy.orm import Session
 import models, schemas
+from datetime import datetime, timedelta
 
 def create_contact(db: Session, contact: schemas.ContactCreate):
     try:
@@ -78,4 +79,15 @@ def search_contacts(db: Session, name: str = None, email: str = None):
 
     contacts = query.all()
     logging.info(f"Found {len(contacts)} contacts matching criteria.")
+    return contacts
+
+def get_contacts_with_upcoming_birthdays(db: Session):
+    today = datetime.today()
+    upcoming = today + timedelta(days=7)
+
+    contacts = db.query(models.Contact).filter(
+        models.Contact.birthday.between(today, upcoming)
+    ).all()
+
+    logging.info(f"Found {len(contacts)} contacts with upcoming birthdays.")
     return contacts

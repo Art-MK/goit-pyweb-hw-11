@@ -100,3 +100,11 @@ def search_contacts(
         return crud.search_contacts(db=db, name=name, email=email)
     except Exception as e:
         raise HTTPException(status_code=400, detail="Failed to search contacts")
+
+# Endpoint get upcoming birthdays
+@app.get("/contacts/upcoming_birthdays/", response_model=list[schemas.Contact])
+def get_upcoming_birthdays(db: Session = Depends(get_db)):
+    try:
+        return crud.get_contacts_with_upcoming_birthdays(db=db)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail="Failed to retrieve contacts")
