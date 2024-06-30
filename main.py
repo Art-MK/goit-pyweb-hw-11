@@ -88,3 +88,15 @@ def delete_contact(contact_id: int, db: Session = Depends(get_db)):
         return deleted_contact
     except Exception as e:
         raise HTTPException(status_code=400, detail="Failed to delete contact")
+
+# Endpoint search contacts
+@app.get("/contacts/search/", response_model=list[schemas.Contact])
+def search_contacts(
+    name: str = None,
+    email: str = None,
+    db: Session = Depends(get_db)
+):
+    try:
+        return crud.search_contacts(db=db, name=name, email=email)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail="Failed to search contacts")

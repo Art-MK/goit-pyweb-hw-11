@@ -66,3 +66,16 @@ def delete_contact(db: Session, contact_id: int):
     except Exception as e:
         logging.error(f"Error deleting contact {contact_id}: {e}")
         raise
+
+def search_contacts(db: Session, name: str = None, email: str = None):
+    query = db.query(models.Contact)
+
+    if name:
+        query = query.filter((models.Contact.first_name.ilike(f"%{name}%")) | (models.Contact.last_name.ilike(f"%{name}%")))
+
+    if email:
+        query = query.filter(models.Contact.email.ilike(f"%{email}%"))
+
+    contacts = query.all()
+    logging.info(f"Found {len(contacts)} contacts matching criteria.")
+    return contacts
